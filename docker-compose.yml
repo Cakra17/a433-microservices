@@ -1,0 +1,38 @@
+#versi docker compose
+version: "3.7"
+
+# pendefinisian sevice yang dibutuhkan
+services:
+  #service pertama item-app
+  item-app:
+    image: ghcr.io/cakra17/item-app:v1 #mengambil image dari github package
+    command: sh -c "npm install --production --unsafe-perm && npm run build"
+    ports:
+      - 8080:80 # menjalankan di port 8080:80
+    working_dir: /app # membuat working_dir
+    volumes:
+      - ./:/app # membuat volume app
+    restart: always # menerapkan restart policy
+    depends_on:
+      - item-db # service item-app akan dijalankan ketika service item-db siap
+    networks:
+      - item-network # menentukan network yang digunakan
+    
+
+  #service kedua item-db  
+  item-db:
+    image: mongo:3 # mendownload image mongo:3
+    ports:
+      - 27017:27017 # menjalankan pada port 27017
+    volumes:
+      - app-db:/data/db # mendefinisikan volume
+    restart: always
+    networks:
+      - item-network # menentukan network yang digunakan
+
+volumes:
+  app-db: # membuat volume app-db
+  
+networks:
+  item-network:
+    driver: bridge # membuat network dengan tipe bridge
