@@ -1,0 +1,22 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: cimg/base:2023.11
+
+    steps:
+      - checkout
+      - setup_remote_docker
+      
+      - run:
+          name: lint-dockerfile
+          command: |
+            docker pull ghcr.io/hadolint/hadolint:latest-alpine
+            docker run --rm -i ghcr.io/hadolint/hadolint:latest-alpine < Dockerfile
+
+      - run:
+          name: build-app-karsajobs-ui
+          command: |
+            docker build -t ghcr.io/cakra17/karsajobs-ui:latest .
+            echo $GHCR_PASSWORD | docker login -u cakra17 --password-stdin
+            docker push ghcr.io/cakra17/karsajobs-ui:latest
