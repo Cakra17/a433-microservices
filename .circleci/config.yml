@@ -18,5 +18,5 @@ jobs:
           name: build-app-karsajobs-ui
           command: |
             docker build -t ghcr.io/cakra17/karsajobs-ui:latest .
-            echo $GHCR_PASSWORD | docker login -u cakra17 --password-stdin
+            docker login -u cakra17 --password $GHCR_PASSWORD ghcr.io
             docker push ghcr.io/cakra17/karsajobs-ui:latest
